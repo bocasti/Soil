@@ -62,7 +62,8 @@ SoilRestoringIndexIterator >> journalEntriesFor: key startingAt: anInteger [
 	entries := OrderedCollection new.
 	transactionId := anInteger.
 	[ transactionId > readVersion ] whileTrue: [  
-		(journal transactionJournalAt: transactionId) entries do: [ :each | 
+	self halt.
+		([(journal transactionJournalAt: transactionId) entries] on: KeyNotFound do: [:ex | "maybe the journal file is not there anymore." #()  ] ) do: [ :each | 
 			((each class = SoilAddKeyEntry) | (each class = SoilRemoveKeyEntry)) ifTrue: [ 
 				(each key = key) ifTrue: [ 
 					entries add: each ] ]  ].
